@@ -38,6 +38,7 @@ jobs:
             done
             for key in $keys; do
               sed -i "s/$key/$value/g" InitialisationFile.txt
+            done
           done < InitialisationFile.txt
 
       - name: Commit and push changes
