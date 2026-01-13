@@ -1,0 +1,48 @@
+name: Initialize Repository
+
+on:
+  #Triggers when the repository is created
+  push:
+    branches: [main, master]
+    paths:
+    - 'InitialisationFile'
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  
+jobs:
+  init-files:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write      
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Apply initialization from init.txt
+        run: |
+          while IFS=: read -r keys value; do
+            # Remove parentheses and spaces from keys, split by comma
+            keys=$(echo "$keys" | tr -d '()' | tr ',' '\n' | xargs)
+            # Trim whitespace from the value
+            value=$(echo "$value" | xargs)
+
+            # Replace each key in README.adoc and index.html
+            for key in $keys; do
+              sed -i "s/$key/$value/g" README.adoc 
+              sed -i "s/$key/$value/g" index.html
+              seed -i "s/$key/$value/g" docs/modelldokumentation/modelldokumentation.adoc
+            done
+          done < init.txt
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add README.adoc index.html
+          git commit -m "Initialize files from init.txt"
+          git push
+          
