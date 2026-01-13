@@ -39,7 +39,7 @@ jobs:
             for key in $keys; do
               sed -i "s/$key/$value/g" InitialisationFile.txt
             done
-          done < InitialisationFile.txt
+          done < InitialisationFile
 
       - name: Commit and push changes
         run: |
