@@ -37,7 +37,7 @@ jobs:
               sed -i "s/$key/$value/g" docs/modelldokumentation/modelldokumentation.adoc
             done
             for key in $keys; do
-              sed -i "s/$key/$value/g" InitialisationFile.txt
+              sed -i "s/$key/$value/g" init
             done
           done < init
 
